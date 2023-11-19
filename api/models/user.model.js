@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    avatar : {
+      type : String, 
+      default : "https://vectorified.com/images/google-profile-icon-11.png"
+    },
   },
   { timestamps: true }
 );
