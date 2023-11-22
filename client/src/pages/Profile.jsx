@@ -11,6 +11,9 @@ import {
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
 } from "../redux/user/userSlice.js";
 export default function Profile() {
   const fileRef = useRef(null);
@@ -62,14 +65,14 @@ export default function Profile() {
     try {
       dispatch(updateUserStart());
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
       const data = await res.json();
-      if(data.succes === false) {
+      if (data.succes === false) {
         dispatch(updateUserFailure(data.message));
         return;
       }
@@ -77,6 +80,28 @@ export default function Profile() {
       setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this account?"
+    );
+    try {
+      if (confirmed) {
+        dispatch(deleteUserStart);
+        const res = await fetch(`/api/user/delete/${currentUser._id}`, {
+          method: "DELETE",
+        });
+        const data = await res.json();
+        if (data.succes === false) {
+          dispatch(deleteUserFailure(data.message));
+          return;
+        }
+      }
+      dispatch(deleteUserSuccess(data));
+    } catch (error) {
+      dispatch(deleteUserFailure(error.message));
     }
   };
 
@@ -133,17 +158,25 @@ export default function Profile() {
           onChange={handleChange}
           id="password"
         />
-        <button disabled={loading} className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-80">
+        <button
+          disabled={loading}
+          className="bg-slate-700 text-white rounded-lg p-3 uppercase hover:opacity-80"
+        >
           {loading ? "Loading..." : "Update"}
         </button>
       </form>
       <div className="flex justify-between mt-5">
-        <span className=" text-red-700 cursor-pointer">Delete account</span>
+        <span
+          onClick={handleDeleteUser}
+          className=" text-red-700 cursor-pointer"
+        >
+          Delete account
+        </span>
         <span className=" text-red-500 cursor-pointer">Sign Out</span>
       </div>
-      <p className='text-red-700 mt-5'>{error ? error : ''}</p>
-      <p className='text-green-700 mt-5'>
-        {updateSuccess ? 'User is updated successfully!' : ''}
+      <p className="text-red-700 mt-5">{error ? error : ""}</p>
+      <p className="text-green-700 mt-5">
+        {updateSuccess ? "User is updated successfully!" : ""}
       </p>
     </div>
   );
