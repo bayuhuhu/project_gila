@@ -106,7 +106,7 @@ export default function Profile() {
           return;
         }
         dispatch(deleteUserSuccess(data));
-      }
+       }
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
