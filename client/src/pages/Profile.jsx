@@ -105,8 +105,8 @@ export default function Profile() {
           dispatch(deleteUserFailure(data.message));
           return;
         }
+        dispatch(deleteUserSuccess(data));
       }
-      dispatch(deleteUserSuccess(data));
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
@@ -143,6 +143,28 @@ export default function Profile() {
     } catch (error) {
       showListingsError(true);
       setShowListingsError(true);
+    }
+  };
+  const handleListingDelete = async (listingId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this listing?"
+    );
+    try {
+      if (confirmed) {
+        const res = await fetch(`api/listing/delete/${listingId}`, {
+          method: "DELETE",
+        });
+        const data = await res.json();
+        if (data.success === false) {
+          console.log(data.message);
+          return;
+        }
+        setUserListings((prev) =>
+          prev.filter((listing) => listing._id !== listingId)
+        );
+      }
+    } catch (error) {
+      console.log(error.message);
     }
   };
   return (
