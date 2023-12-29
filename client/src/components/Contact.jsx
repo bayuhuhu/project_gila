@@ -18,7 +18,7 @@ export default function Contact({ listing }) {
         console.log(error);
       }
     };
-    fetchLandlord();
+    fetchLandlord();     
   }, [listing.userRef]);
   return (
     <>
